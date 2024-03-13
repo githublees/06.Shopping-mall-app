@@ -1,0 +1,66 @@
+.cartlist-container {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-evenly;
+  align-items: center;
+
+  margin: 20px;
+}
+
+.cartlist-container-detail {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-evenly;
+  align-items: center;
+}
+.cartlist-container__img {
+  width: 100px;
+  height: 100px;
+}
+
+.cartlist-container-info {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-evenly;
+  align-items: flex-start;
+
+  margin-left: 20px;
+  gap: 5px;
+}
+
+.cartlist__category {
+  font-weight: bold;
+  color: lightgray;
+}
+
+.cartlist__title {
+  font-weight: bold;
+  color: black;
+}
+
+.cartlist__cost {
+  color: black;
+}
+.cartlist-container-calc > button {
+  margin: 10px;
+  padding: 10px;
+}
+.cartlist-container-calc > input {
+  padding: 10px;
+  width: 30px;
+}
+
+.cartlist__delete {
+  border: 0;
+  background-color: white;
+  cursor: pointer;
+}
+
+input::-webkit-inner-spin-button {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
