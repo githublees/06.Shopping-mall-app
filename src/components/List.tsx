@@ -5,13 +5,14 @@ import styled from "styled-components";
 import { useAppDispatch } from "../redux/store";
 import { SingleProduct } from "../redux/thunk/storeThunk";
 import { ProductType } from "../redux/SingleSlice";
-import { active } from "../redux/ModalSlice";
+import { active, unActive } from "../redux/ModalSlice";
 import { addProduct } from "../redux/CartSlice";
 
 const List = ({ product }: { product: ProductType }) => {
   const dispatch = useAppDispatch();
 
   const handleModal = () => {
+    dispatch(unActive());
     dispatch(SingleProduct(product.id));
     dispatch(addProduct(product));
     dispatch(active());

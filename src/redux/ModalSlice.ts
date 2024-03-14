@@ -27,7 +27,7 @@ export const modalSlice = createSlice({
       return { isActive: false, alarm: state.alarm };
     },
     removeAlarm: (state) => {
-      return { isActive: state.isActive, alarm: 0 };
+      return { isActive: false, alarm: 0 };
     },
   },
 });

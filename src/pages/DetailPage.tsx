@@ -4,7 +4,7 @@ import "../styles/DetailPage.css";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { addProduct } from "../redux/CartSlice";
-import { active } from "../redux/ModalSlice";
+import { active, unActive } from "../redux/ModalSlice";
 import { SingleProduct } from "../redux/thunk/storeThunk";
 
 const DetailPage = () => {
@@ -12,6 +12,7 @@ const DetailPage = () => {
   const product = useAppSelector((state) => state.product);
 
   const handleModal = () => {
+    dispatch(unActive());
     dispatch(SingleProduct(product.id));
     dispatch(addProduct(product));
     dispatch(active());
