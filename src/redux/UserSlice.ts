@@ -1,27 +1,29 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface UserType {
-  state: boolean;
-  token: string;
+  email: string;
+  isActive: boolean;
 }
 
-const initialState: UserType = { state: false, token: "" };
+const initialState: UserType = {
+  email: "",
+  isActive: false,
+};
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    saveUserInfo: (state, action: PayloadAction<UserType>) => {
-      state.state = action.payload.state;
-      state.token = action.payload.token;
+    userSignIn: (state, action: PayloadAction<UserType>) => {
+      return action.payload;
     },
-    deleteUserInfo: (state) => {
-      state = { state: false, token: "" };
+    userSignOut: (state) => {
+      return { email: "", isActive: false };
     },
+    //   공부
+    //   extraReducers: {},
   },
-  //   공부
-  //   extraReducers: {},
 });
 
-export const { saveUserInfo, deleteUserInfo } = userSlice.actions;
+export const { userSignIn, userSignOut } = userSlice.actions;
 export default userSlice.reducer;

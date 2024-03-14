@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import {
-  auth,
+  authService,
   createUserWithEmailAndPassword,
 } from "../firebase/firebaseConfig";
 import "../styles/LoginPage.css";
@@ -8,7 +8,6 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
-  /* 리덕스로 교체 */
   const [isActive, setIsActive] = useState(false);
   const [isColor, setIsColor] = useState("white");
   const [isEmail, setIsEmail] = useState("");
@@ -16,47 +15,61 @@ const RegisterPage = () => {
   const [isCheckPwd, setIsCheckPwd] = useState("");
   const [errorMsg, setErrorMsg] = useState(" ");
 
+  const initialForm = () => {
+    setIsEmail("");
+    setIsPwd("");
+    setIsCheckPwd("");
+  };
+
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (isCheckPwd === "") {
-      setErrorMsg(" ");
-    } else if (isPwd === isCheckPwd && isPwd !== "") {
-      setIsActive(true);
-      setErrorMsg("비밀번호가 같습니다.");
-      setIsColor("green");
+    if (isCheckPwd !== "") {
+      if (isCheckPwd === isPwd && isPwd !== "") {
+        setIsActive(true);
+        setIsColor("green");
+        setErrorMsg("비밀번호가 일치합니다.");
+      } else {
+        setIsActive(false);
+        setIsColor("red");
+        setErrorMsg("비밀번호가 서로 다릅니다.");
+      }
     } else {
       setIsActive(false);
-      setErrorMsg("비밀번호가 다릅니다.");
-      setIsColor("red");
     }
-  }, [isCheckPwd, isPwd, isActive]);
+  }, [isCheckPwd, isPwd]);
 
-  const register = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
-      setErrorMsg(" ");
-      const createUser = await createUserWithEmailAndPassword(
-        auth,
-        isEmail,
-        isPwd
-      );
-      // console.log(createUser);
-      alert("회원가입 성공");
-      navigate("/login");
-    } catch (error: any) {
-      console.log("error.code", error.code);
-      // setErrorMsg(error.code);
+      await createUserWithEmailAndPassword(authService, isEmail, isPwd)
+        .then(() => {
+          setErrorMsg(" ");
+          alert("회원가입에 성공하였습니다.");
+          navigate("/login");
+        })
+        .catch((error) => {
+          throw error.code;
+        });
+    } catch (error) {
       setIsColor("red");
-      switch (error.code) {
+      switch (error) {
         case "auth/weak-password":
           setErrorMsg("비밀번호는 6자리 이상이어야 합니다");
+          initialForm();
           break;
         case "auth/invalid-email":
           setErrorMsg("잘못된 이메일 주소입니다");
+          initialForm();
           break;
         case "auth/email-already-in-use":
           setErrorMsg("이미 가입되어 있는 계정입니다.");
+          initialForm();
+          break;
+        default:
+          setErrorMsg("회원가입에 실패하였습니다.");
+          initialForm();
           break;
       }
     }
@@ -75,7 +88,7 @@ const RegisterPage = () => {
   return (
     <div className="login-container">
       <div className="login-container-form">
-        <form onSubmit={register}>
+        <form onSubmit={handleRegister}>
           <span>회원가입</span>
           <input
             type="email"
@@ -110,7 +123,7 @@ const RegisterPage = () => {
           )}
         </form>
         <NavStyle style={{ textDecoration: "none" }} to="/login">
-          Go to LogIn
+          Go to SignIn
         </NavStyle>
       </div>
     </div>

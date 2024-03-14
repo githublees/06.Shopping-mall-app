@@ -3,24 +3,35 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import "../../styles/CartModal.css";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { ModalType, unActive } from "../../redux/ModalSlice";
+import { removeProduct } from "../../redux/CartSlice";
 
-const CartModal = ({ isActive, setIsActive }: any) => {
-  const [render, setRender] = useState(isActive);
+const CartModal = ({ modal }: { modal: ModalType }) => {
+  const dispatch = useAppDispatch();
+  const product = useAppSelector((state) => state.product);
+
+  const [render, setRender] = useState(modal.isActive);
 
   useEffect(() => {
-    if (isActive) {
+    if (modal) {
       setRender(true);
     }
-  }, [isActive]);
+  }, [modal]);
 
   const onAnimationEnd = () => {
     if (render) {
       setTimeout(() => {
         setRender(false);
-      }, 2000);
+      }, 1600);
     } else {
-      setIsActive(false);
+      dispatch(unActive());
     }
+  };
+
+  const handleDelete = () => {
+    dispatch(removeProduct(product.id));
+    dispatch(unActive());
   };
 
   return (
@@ -35,16 +46,18 @@ const CartModal = ({ isActive, setIsActive }: any) => {
           }}
           onAnimationEnd={onAnimationEnd}
         >
-          <button className="modal__delete">
+          <button onClick={handleDelete} className="modal__delete">
             <FaRegTrashCan size="24" style={{ color: "gray" }} />
           </button>
-          <div className="modal__img">img</div>
-          <div className="modal-container">
-            <div className="modal__category">man's closhing</div>
-            <div className="modal__title">title</div>
-            <div className="modal__exp">블라블라</div>
+          <div className="modal-container__img">
+            <img className="modal__img" src={product.image} alt="img" />
           </div>
-          <div className="modal__cost">합계: $130</div>
+          <div className="modal-container">
+            <div className="modal__category">{product.category}</div>
+            <div className="modal__title">{product.title}</div>
+            <div className="modal__exp">{`${product.description}`}</div>
+          </div>
+          <div className="modal__cost">가격: {`$${product.price}`}</div>
           {/* <button className="modal__cartbtn"> */}
           <NavStyle to="cart" style={{ textDecoration: "none", color: "grey" }}>
             장바구니 가기

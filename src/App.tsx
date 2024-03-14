@@ -6,16 +6,13 @@ import LoginPage from "./pages/LoginPage";
 import CartPage from "./pages/CartPage";
 import Header from "./components/Header";
 import RegisterPage from "./pages/RegisterPage";
-import { useState } from "react";
 
 const Layout = () => {
-  const [isActive, setIsActive] = useState(false);
-
   return (
     <div>
-      <Header isActive={isActive} setIsActive={setIsActive} />
+      <Header />
 
-      <Outlet context={{ isActive, setIsActive }} />
+      <Outlet />
     </div>
   );
 };
@@ -26,7 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<MainPage />} />
-          <Route path="detail" element={<DetailPage />} />
+          <Route path="detail/:productId" element={<DetailPage />} />
           {/* detail/:productId */}
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />

@@ -4,7 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   setPersistence,
-  inMemoryPersistence,
+  browserSessionPersistence,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -20,13 +20,13 @@ const firebaseConfig = {
 // Initialize Firebase
 // console.log(firebaseConfig);
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const authService = getAuth(app);
 // const auth = getAnalytics(app);
 
 export {
-  auth,
+  authService,
   setPersistence,
-  inMemoryPersistence,
+  browserSessionPersistence,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 };

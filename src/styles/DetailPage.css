@@ -16,6 +16,17 @@
 
   /* border: 1px solid black; */
 }
+
+.detail-container__img > img {
+  width: 700px;
+  height: 700px;
+  margin: 20px 20px;
+
+  object-fit: contain;
+
+  /* border: 1px solid black; */
+}
+
 .detail-container-info {
   display: flex;
   flex-direction: column;

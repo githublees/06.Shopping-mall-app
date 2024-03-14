@@ -1,14 +1,40 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../styles/Header.css";
-import { Link, NavLink } from "react-router-dom";
-import { FiUser } from "react-icons/fi";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { LuShoppingCart } from "react-icons/lu";
-import { MdLogin } from "react-icons/md";
+import { MdLogin, MdLogout } from "react-icons/md";
 import styled from "styled-components";
 import CartModal from "./cart/CartModal";
+import { authService } from "../firebase/firebaseConfig";
+import { userSignOut } from "../redux/UserSlice";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 
-const Header = ({ isActive, setIsActive }: any) => {
-  useEffect(() => {}, [isActive]);
+const Header = () => {
+  const [userStatus, setUserStatus] = useState(false);
+  const dispatch = useAppDispatch();
+  const modal = useAppSelector((state) => state.modal);
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    authService
+      .signOut()
+      .then(() => {
+        dispatch(userSignOut());
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    authService.onAuthStateChanged((user) => {
+      if (user) {
+        setUserStatus(true);
+      } else {
+        setUserStatus(false);
+      }
+    });
+  }, [modal]);
 
   return (
     <div className="header">
@@ -22,21 +48,27 @@ const Header = ({ isActive, setIsActive }: any) => {
           <NavStyle to="cart" style={{ textDecoration: "none" }}>
             <LuShoppingCart size="24" />
           </NavStyle>
-          <div className="notifications-icon-container">
-            <div className="notifications-count">1</div>
-          </div>
-          <NavStyle
-            to="search"
-            style={{ textDecoration: "none", paddingLeft: "30px" }}
-          >
-            <FiUser size="24" />
-          </NavStyle>
-          <NavStyle to="login" style={{ textDecoration: "none" }}>
-            <MdLogin size="24" />
-          </NavStyle>
-          {isActive && (
-            <CartModal isActive={isActive} setIsActive={setIsActive} />
+          {modal.alarm !== 0 ? (
+            <div className="notifications-icon-container">
+              <div className="notifications-count">{modal.alarm}</div>
+            </div>
+          ) : (
+            ""
           )}
+          {!userStatus ? (
+            <NavStyle to="login" style={{ textDecoration: "none" }}>
+              <MdLogin size="24" />
+            </NavStyle>
+          ) : (
+            <NavStyle
+              to="/"
+              style={{ textDecoration: "none" }}
+              onClick={handleLogOut}
+            >
+              <MdLogout size="24" />
+            </NavStyle>
+          )}
+          {modal.isActive && <CartModal modal={modal} />}
         </div>
       </div>
     </div>
@@ -53,10 +85,6 @@ const NavStyle = styled(NavLink)`
   cursor: pointer;
 
   &:hover {
-    color: lightgray;
-  }
-
-  &.active {
     color: lightgray;
   }
 `;

@@ -1,22 +1,35 @@
 import React, { useEffect } from "react";
-import { NavLink, useOutletContext } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "../styles/DetailPage.css";
 import styled from "styled-components";
+import { useAppDispatch, useAppSelector } from "../redux/store";
+import { addProduct } from "../redux/CartSlice";
+import { active } from "../redux/ModalSlice";
+import { SingleProduct } from "../redux/thunk/storeThunk";
 
 const DetailPage = () => {
-  const { isActive, setIsActive }: any = useOutletContext();
+  const dispatch = useAppDispatch();
+  const product = useAppSelector((state) => state.product);
 
-  useEffect(() => {}, [isActive]);
+  const handleModal = () => {
+    dispatch(SingleProduct(product.id));
+    dispatch(addProduct(product));
+    dispatch(active());
+  };
+
+  useEffect(() => {}, []);
   return (
     <div className="detail-container">
-      <div className="detail-container__img">img</div>
+      <div className="detail-container__img">
+        <img src={product.image} alt="img" />
+      </div>
       <div className="detail-container-info">
-        <span className="detail__category">man's closhing</span>
-        <span className="detail__title">title</span>
-        <span className="detail__cost">$ 125.3</span>
-        <span className="detail__info">블라블라</span>
+        <span className="detail__category">{product.category}</span>
+        <span className="detail__title">{product.title}</span>
+        <span className="detail__cost">{`$${product.price}`}</span>
+        <span className="detail__info">{product.description}</span>
         <div className="detail-container-box">
-          <button onClick={() => setIsActive(true)}>장바구니에 담기</button>
+          <button onClick={handleModal}>장바구니에 담기</button>
           <NavStyle to="/cart" style={{ textDecoration: "none" }}>
             <span>장바구니 가기</span>
           </NavStyle>
